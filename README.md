@@ -64,6 +64,7 @@ src -- 源码目录
 npm install node-sass@latest
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 cnpm install svg-icon -g
+cnpm install --save vue-wechat-title
 - 在IDEA命令行中运行命令：npm run dev,运行项目;
 - 访问地址：[http://localhost:8090](http://localhost:8090) 即可打开后台管理系统页面;
 - 具体部署过程请参考：[mall前端项目的安装与部署](http://www.macrozheng.com/#/deploy/mall_deploy_web)
