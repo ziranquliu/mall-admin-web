@@ -358,6 +358,27 @@ export const asyncRouterMap = [
       }
     ]
   },
+  {
+    path:'/data',
+    component: Layout,
+    redirect: '/data/dbs',
+    name: 'data',
+    meta: {title: '数据', icon: 'data'},
+    children:[
+      {
+        path: 'dbs',
+        name: 'dbs',
+        component: () => import('@/views/data/dbs/index'),
+        meta: {title: '数据库列表', icon: 'data-dbs'}
+      },
+      {
+        path: 'apis',
+        name: 'apis',
+        component: () => import('@/views/data/apis/index'),
+        meta: {title: '接口列表', icon: 'data-apis'}
+      }
+    ]
+  },
   {path: '*', redirect: '/404', hidden: true}
 ]
 
