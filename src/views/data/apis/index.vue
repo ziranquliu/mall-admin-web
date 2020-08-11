@@ -15,8 +15,8 @@
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
-        <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+        <el-table-column label="序号" width="100" align="center">
+          <template slot-scope="scope">{{scope.$index+(listQuery.pageNum - 1) * listQuery.pageSize + 1}}</template>
         </el-table-column>
         <el-table-column label="菜单名称" align="center">
           <template slot-scope="scope">{{scope.row.title}}</template>

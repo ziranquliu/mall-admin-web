@@ -15,43 +15,26 @@
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
-        <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+        <el-table-column label="序号" width="100" align="center">
+          <template slot-scope="scope">{{scope.$index+(listQuery.pageNum - 1) * listQuery.pageSize + 1}}</template>
         </el-table-column>
-        <el-table-column label="菜单名称" align="center">
+        <el-table-column label="连接名称" align="center">
           <template slot-scope="scope">{{scope.row.title}}</template>
         </el-table-column>
-        <el-table-column label="菜单级数" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
-        </el-table-column>
-        <el-table-column label="前端名称" align="center">
+        <el-table-column label="连接信息" align="center">
           <template slot-scope="scope">{{scope.row.name}}</template>
         </el-table-column>
-        <el-table-column label="前端图标" width="100" align="center">
-          <template slot-scope="scope"><svg-icon :icon-class="scope.row.icon"></svg-icon></template>
+        <el-table-column label="接口数量" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
         </el-table-column>
-        <el-table-column label="是否显示" width="100" align="center">
-          <template slot-scope="scope">
-            <el-switch
-              @change="handleHiddenChange(scope.$index, scope.row)"
-              :active-value="0"
-              :inactive-value="1"
-              v-model="scope.row.hidden">
-            </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="排序" width="100" align="center">
+        <el-table-column label="是否启用" width="100" align="center">
           <template slot-scope="scope">{{scope.row.sort }}</template>
         </el-table-column>
-        <el-table-column label="设置" width="120" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              :disabled="scope.row.level | disableNextLevel"
-              @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
-            </el-button>
-          </template>
+        <el-table-column label="查询类型" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.sort }}</template>
+        </el-table-column>
+        <el-table-column label="版本" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.sort }}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
@@ -85,10 +68,10 @@
 </template>
 
 <script>
-  import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/menu'
+  import {fetchList,deleteDb,updateDb,updateHidden} from '@/api/db'
 
   export default {
-    name: "menuList",
+    name: "dbList",
     data() {
       return {
         list: null,
@@ -97,8 +80,7 @@
         listQuery: {
           pageNum: 1,
           pageSize: 5
-        },
-        parentId: 0
+        }
       }
     },
     created() {
@@ -112,20 +94,12 @@
       }
     },
     methods: {
-      resetParentId(){
-        this.listQuery.pageNum = 1;
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-        } else {
-          this.parentId = 0;
-        }
-      },
       handleAddMenu() {
         this.$router.push('/ums/addMenu');
       },
       getList() {
         this.listLoading = true;
-        fetchList(this.parentId, this.listQuery).then(response => {
+        fetchList(this.listQuery).then(response => {
           this.listLoading = false;
           this.list = response.data.list;
           this.total = response.data.total;
@@ -150,7 +124,7 @@
         });
       },
       handleShowNextLevel(index, row) {
-        this.$router.push({path: '/ums/menu', query: {parentId: row.id}})
+        this.$router.push({path: '/ums/menu', query: {}})
       },
       handleUpdate(index, row) {
         this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
