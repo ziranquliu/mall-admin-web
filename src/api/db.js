@@ -38,9 +38,9 @@ export function getDb(id) {
   })
 }
 
-export function updateHidden(id, params) {
+export function updateEnabled(id, params) {
   return request({
-    url: '/db/updateHidden/' + id,
+    url: '/db/updateEnabled/' + id,
     method: 'post',
     params: params
   })

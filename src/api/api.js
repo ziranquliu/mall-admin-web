@@ -38,9 +38,9 @@ export function getApi(id) {
   })
 }
 
-export function updateHidden(id, params) {
+export function updateEnabled(id, params) {
   return request({
-    url: '/api/updateHidden/' + id,
+    url: '/api/updateEnabled/' + id,
     method: 'post',
     params: params
   })

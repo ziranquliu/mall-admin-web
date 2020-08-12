@@ -30,7 +30,7 @@
         <el-table-column label="是否启用" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
-              @change="handleHiddenChange(scope.$index, scope.row)"
+              @change="handleEnabledChange(scope.$index, scope.row)"
               :active-value="true"
               :inactive-value="false"
               v-model="scope.row.isEnabled">
@@ -43,7 +43,10 @@
         <el-table-column label="版本" width="100" align="center">
           <template slot-scope="scope">{{scope.row.version }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="最后修改时间" width="108" align="center">
+          <template slot-scope="scope">{{scope.row.modifiedOn | FD}}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -75,7 +78,8 @@
 </template>
 
 <script>
-  import {fetchList,deleteDb,updateDb,updateHidden} from '@/api/db'
+  import {fetchList,deleteDb,updateDb,updateEnabled} from '@/api/db'
+  import dayjs from 'dayjs'
 
   export default {
     name: "dbList",
@@ -119,20 +123,21 @@
         this.listQuery.pageNum = val;
         this.getList();
       },
-      handleHiddenChange(index, row) {
-        updateHidden(row.id,{hidden:row.hidden}).then(response=>{
+      handleEnabledChange(index, row) {
+        updateEnabled(row.id,{enabled:row.isEnabled}).then(response=>{
           this.$message({
             message: '修改成功',
             type: 'success',
             duration: 1000
           });
+          this.getList();
         });
       },
       handleUpdate(index, row) {
         this.$router.push({path:'/data/dbs/updatedb',query:{id:row.id}});
       },
       handleDelete(index, row) {
-        this.$confirm('是否要删除该菜单', '提示', {
+        this.$confirm('是否要删除该数据库', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -155,6 +160,9 @@
         } else {
           return '否';
         }
+      },
+      FD(value) {
+        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
       }
     }
   }
