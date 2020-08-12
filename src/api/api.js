@@ -2,45 +2,45 @@ import request from '@/utils/request'
 
 export function fetchList( params) {
   return request({
-    url: '/db/list/',
+    url: '/api/list/',
     method: 'get',
     params: params
   })
 }
 
-export function deleteDb(id) {
+export function deleteApi(id) {
   return request({
-    url: '/db/delete/' + id,
+    url: '/api/delete/' + id,
     method: 'post'
   })
 }
 
-export function createDb(data) {
+export function createApi(data) {
   return request({
-    url: '/db/create',
+    url: '/api/create',
     method: 'post',
     data: data
   })
 }
 
-export function updateDb(id, data) {
+export function updateApi(id, data) {
   return request({
-    url: '/db/update/' + id,
+    url: '/api/update/' + id,
     method: 'post',
     data: data
   })
 }
 
-export function getDb(id) {
+export function getApi(id) {
   return request({
-    url: '/db/' + id,
+    url: '/api/' + id,
     method: 'get',
   })
 }
 
 export function updateHidden(id, params) {
   return request({
-    url: '/db/updateHidden/' + id,
+    url: '/api/updateHidden/' + id,
     method: 'post',
     params: params
   })

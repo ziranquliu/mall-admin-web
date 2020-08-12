@@ -28,7 +28,14 @@
           <template slot-scope="scope">{{scope.row.apiNumbers}}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.isEnabled | enableFilter }}</template>
+          <template slot-scope="scope">
+            <el-switch
+              @change="handleHiddenChange(scope.$index, scope.row)"
+              :active-value="true"
+              :inactive-value="false"
+              v-model="scope.row.isEnabled">
+            </el-switch>
+          </template>
         </el-table-column>
         <el-table-column label="查询类型" width="100" align="center">
           <template slot-scope="scope">{{scope.row.queryType }}</template>

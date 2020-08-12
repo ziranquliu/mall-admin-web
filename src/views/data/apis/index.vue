@@ -5,55 +5,45 @@
       <span style="margin-top: 5px">接口列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddMenu()"
+        @click="handleAddApi()"
         size="mini">
         添加
       </el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="menuTable"
+      <el-table ref="apiTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="序号" width="100" align="center">
           <template slot-scope="scope">{{scope.$index+(listQuery.pageNum - 1) * listQuery.pageSize + 1}}</template>
         </el-table-column>
-        <el-table-column label="菜单名称" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
+        <el-table-column label="接口名称" align="center">
+          <template slot-scope="scope">{{scope.row.interfaceName}}</template>
         </el-table-column>
-        <el-table-column label="菜单级数" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
+        <el-table-column label="接口内容" width="500" align="center">
+          <template slot-scope="scope">{{scope.row.interfaceContent}}</template>
         </el-table-column>
-        <el-table-column label="前端名称" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
-        </el-table-column>
-        <el-table-column label="前端图标" width="100" align="center">
-          <template slot-scope="scope"><svg-icon :icon-class="scope.row.icon"></svg-icon></template>
-        </el-table-column>
-        <el-table-column label="是否显示" width="100" align="center">
+        <el-table-column label="是否启用" width="100" align="center">
           <template slot-scope="scope">
             <el-switch
               @change="handleHiddenChange(scope.$index, scope.row)"
-              :active-value="0"
-              :inactive-value="1"
-              v-model="scope.row.hidden">
+              :active-value="true"
+              :inactive-value="false"
+              v-model="scope.row.isEnabled">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
+        <el-table-column label="支持方法" width="80" align="center">
+          <template slot-scope="scope">{{scope.row.httpMethod | HttpMethodFilter}}</template>
         </el-table-column>
-        <el-table-column label="设置" width="120" align="center">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              :disabled="scope.row.level | disableNextLevel"
-              @click="handleShowNextLevel(scope.$index, scope.row)">查看下级
-            </el-button>
-          </template>
+        <el-table-column label="数据库" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.connName}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="版本" width="100" align="center">
+          <template slot-scope="scope">{{scope.row.version }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -85,10 +75,11 @@
 </template>
 
 <script>
-  import {fetchList,deleteMenu,updateMenu,updateHidden} from '@/api/menu'
+  import {fetchList,deleteApi,updateApi,updateHidden} from '@/api/api'
+  import HttpMethods from '@/utils/HttpMethods'
 
   export default {
-    name: "menuList",
+    name: "apiList",
     data() {
       return {
         list: null,
@@ -97,31 +88,20 @@
         listQuery: {
           pageNum: 1,
           pageSize: 5
-        },
-        parentId: 0
+        }
       }
     },
     created() {
-      this.resetParentId();
       this.getList();
     },
     watch: {
       $route(route) {
-        this.resetParentId();
         this.getList();
       }
     },
     methods: {
-      resetParentId(){
-        this.listQuery.pageNum = 1;
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-        } else {
-          this.parentId = 0;
-        }
-      },
-      handleAddMenu() {
-        this.$router.push('/ums/addMenu');
+      handleAddApi() {
+        this.$router.push('/api/addApi');
       },
       getList() {
         this.listLoading = true;
@@ -149,19 +129,16 @@
           });
         });
       },
-      handleShowNextLevel(index, row) {
-        this.$router.push({path: '/ums/menu', query: {parentId: row.id}})
-      },
       handleUpdate(index, row) {
-        this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
+        this.$router.push({path:'/data/apis/updateApi',query:{id:row.id}});
       },
       handleDelete(index, row) {
-        this.$confirm('是否要删除该菜单', '提示', {
+        this.$confirm('是否要删除该接口？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteMenu(row.id).then(response => {
+          deleteApi(row.id).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -173,19 +150,8 @@
       }
     },
     filters: {
-      levelFilter(value) {
-        if (value === 0) {
-          return '一级';
-        } else if (value === 1) {
-          return '二级';
-        }
-      },
-      disableNextLevel(value) {
-        if (value === 0) {
-          return false;
-        } else {
-          return true;
-        }
+      HttpMethodFilter(value) {
+        return HttpMethods[value];
       }
     }
   }
