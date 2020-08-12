@@ -5,13 +5,13 @@
       <span style="margin-top: 5px">数据库列表</span>
       <el-button
         class="btn-add"
-        @click="handleAddMenu()"
+        @click="handleAddDb()"
         size="mini">
         添加
       </el-button>
     </el-card>
     <div class="table-container">
-      <el-table ref="menuTable"
+      <el-table ref="dbTable"
                 style="width: 100%"
                 :data="list"
                 v-loading="listLoading" border>
@@ -19,22 +19,22 @@
           <template slot-scope="scope">{{scope.$index+(listQuery.pageNum - 1) * listQuery.pageSize + 1}}</template>
         </el-table-column>
         <el-table-column label="连接名称" align="center">
-          <template slot-scope="scope">{{scope.row.title}}</template>
+          <template slot-scope="scope">{{scope.row.connName}}</template>
         </el-table-column>
-        <el-table-column label="连接信息" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
+        <el-table-column label="连接信息" width="300" align="center">
+          <template slot-scope="scope">{{scope.row.connStr}}</template>
         </el-table-column>
         <el-table-column label="接口数量" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
+          <template slot-scope="scope">{{scope.row.apiNumbers}}</template>
         </el-table-column>
         <el-table-column label="是否启用" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
+          <template slot-scope="scope">{{scope.row.isEnabled | enableFilter }}</template>
         </el-table-column>
         <el-table-column label="查询类型" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
+          <template slot-scope="scope">{{scope.row.queryType }}</template>
         </el-table-column>
         <el-table-column label="版本" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
+          <template slot-scope="scope">{{scope.row.version }}</template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
@@ -84,18 +84,16 @@
       }
     },
     created() {
-      this.resetParentId();
       this.getList();
     },
     watch: {
       $route(route) {
-        this.resetParentId();
         this.getList();
       }
     },
     methods: {
-      handleAddMenu() {
-        this.$router.push('/ums/addMenu');
+      handleAddDB() {
+        this.$router.push('/db/addDB');
       },
       getList() {
         this.listLoading = true;
@@ -123,11 +121,8 @@
           });
         });
       },
-      handleShowNextLevel(index, row) {
-        this.$router.push({path: '/ums/menu', query: {}})
-      },
       handleUpdate(index, row) {
-        this.$router.push({path:'/ums/updateMenu',query:{id:row.id}});
+        this.$router.push({path:'/data/dbs/updatedb',query:{id:row.id}});
       },
       handleDelete(index, row) {
         this.$confirm('是否要删除该菜单', '提示', {
@@ -135,7 +130,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          deleteMenu(row.id).then(response => {
+          deleteDB(row.id).then(response => {
             this.$message({
               message: '删除成功',
               type: 'success',
@@ -147,18 +142,11 @@
       }
     },
     filters: {
-      levelFilter(value) {
-        if (value === 0) {
-          return '一级';
-        } else if (value === 1) {
-          return '二级';
-        }
-      },
-      disableNextLevel(value) {
-        if (value === 0) {
-          return false;
+      enableFilter(value) {
+        if (value) {
+          return '是';
         } else {
-          return true;
+          return '否';
         }
       }
     }
